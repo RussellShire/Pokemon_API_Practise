@@ -1,4 +1,5 @@
 const pokedex = document.getElementById('pokedex');
+const pokedexArray = [];
 
 // Fetch API Version 4, using Promise.all to return all Pokemon at the same time rather than one after the other
 const fetchPokemon = () => {
@@ -17,19 +18,38 @@ const fetchPokemon = () => {
             name: data.name,
             id: data.id,
             image: data.sprites['front_default'],
+            backImage: data.sprites['back_default'],
             type: data.types.map(type => type.type.name) // mapping through an array in the data and getting out multiple entries
             .join(', ') // joining the array into a string, this is optional
+            
         }));
         displayPokemon(pokemon);
+        storePokemon(pokemon)     
     });
 };
 
+const storePokemon = (pokemon) => pokemon.map(individualPokemon => pokedexArray.push(individualPokemon)); 
+
 const displayPokemon = (pokemon) => {
-    console.log(pokemon)
+    //console.log(pokemon)
+    
+    // Building HTML for each pokemon using .map
+    const pokemonHtmlString = pokemon.map(individualPokemon => `
+    <li class="card-border">
+        <div class="card">
+            <img class="card-image" src="${individualPokemon.image}"/>
+            <div class="card-title"><h2 id="poke-id">${individualPokemon.id}.</h2> <h2 id="poke-name">${individualPokemon.name}</h2></div>
+            <p class="card-subtitle">Type: ${individualPokemon.type}</p>
+        </div>
+    </li>
+    `).join('') // converts .map array to a string so it can be fed into innerHTML
+    
+    pokedex.innerHTML = pokemonHtmlString;
 }
 
-fetchPokemon();
 
+fetchPokemon();
+console.log(pokedexArray)
 
 
 // Different implementations of API below, increasing in sophistication between versions
