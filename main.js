@@ -1,6 +1,18 @@
 const pokedex = document.getElementById('pokedex');
 const pokedexArray = [];
 
+async function fetchPokeNames() {
+    const pokeCount = 151;
+
+    const response = await fetch(`https://pokeapi.co/api/v2/pokemon/?limit=${pokeCount}`);
+    const pokemon = await response.json()
+    
+    console.log(pokemon.next);
+    console.log(pokemon.results)
+}
+
+//fetchPokeNames()
+
 // Fetch API Version 4, using Promise.all to return all Pokemon at the same time rather than one after the other
 const fetchPokemon = () => {
     const promises = []; // initializing an array for promises
@@ -36,9 +48,9 @@ const displayPokemon = (pokemon) => {
     // Building HTML for each pokemon using .map
     const pokemonHtmlString = pokemon.map(individualPokemon => `
     <li class="card-border">
-        <div class="card">
+        <div class="card" id="card">
             <img class="card-image" src="${individualPokemon.image}"/>
-            <div class="card-title"><h2 id="poke-id">${individualPokemon.id}.</h2> <h2 id="poke-name">${individualPokemon.name}</h2></div>
+            <div class="card-title"><h2 class="poke-id" id="poke-id">${individualPokemon.id}.</h2> <h2 id="poke-name">${individualPokemon.name}</h2></div>
             <p class="card-subtitle">Type: ${individualPokemon.type}</p>
         </div>
     </li>
@@ -47,10 +59,19 @@ const displayPokemon = (pokemon) => {
     pokedex.innerHTML = pokemonHtmlString;
 }
 
-
 fetchPokemon();
-console.log(pokedexArray)
 
+/* trying to apply event listeners to dynamically created elements
+pokedex.onclick = (e) => {
+    console.log(e.target.classList.contains('poke-id'))
+    console.log(e.target.innerHTML)
+    //if (image.classList.contains('card-image')) {
+        
+        //image.innerHTML = 'testtesttest'
+        //console.log(e.target)
+    
+   // }
+}*/
 
 // Different implementations of API below, increasing in sophistication between versions
 
