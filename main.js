@@ -2,48 +2,41 @@ const pokedex = document.getElementById('pokedex');
 const pokeNames = [];
 const pokedexArray = [];
 
-async function fetchPokeNames(pokeCount) {
-    const pokeCount = pokeCount;
-
+async function fetchPokeNames(pokeCounter = 151) {
+    const pokeCount = pokeCounter;
     const response = await fetch(`https://pokeapi.co/api/v2/pokemon/?limit=${pokeCount}`);
     const data = await response.json()
-    
+
     // Mapping pokemon names to a global array
-    data.results.map(pokemon => pokeNames.push(pokemon.name))
+    data.results.map(async pokemon => pokeNames.push(await pokemon.name))   
 }
 
-fetchPokeNames(151) // Calling 151 pokemon names from the API and saving to an array
-
 // Fetch API Version 5, converting to Async Await and building with names instead of numbers in URL as will be the case with most APIs
-
-
-// Fetch API Version 4, using Promise.all to return all Pokemon at the same time rather than one after the other
-const fetchPokemon = () => {
-    const promises = []; // initializing an array for promises
+async function fetchPokemon(){
+    await fetchPokeNames(11)
     
-    for(let i = 1; i<= 151; i++) { //for loop that counts from 1 to 150 and assigns to i   
-        const url = `https://pokeapi.co/api/v2/pokemon/${i}` // url is edited by for loop.
+    const pokemonBuilder = await Promise.all(pokeNames.map(async pokeName => {
+            const url = `https://pokeapi.co/api/v2/pokemon/${pokeName}`
+            const result = await fetch(url);
+            const data = await result.json();
+            //console.log(data.name);
+            return data
+        }))
 
-        // adding promises created by the for loop to the promises array
-        promises.push(fetch(url).then(response => response.json()))  // also making the response into a json
-    }
-    
-    // Resolving all the promises from the array simultaniously
-    Promise.all(promises).then((results) => { // Taking each result and mapping them onto Pokemon objects
-        const pokemon = results.map((data) => ({
-            name: data.name,
-            id: data.id,
-            image: data.sprites['front_default'],
-            backImage: data.sprites['back_default'],
-            type: data.types.map(type => type.type.name) // mapping through an array in the data and getting out multiple entries
+    const pokemon = await pokemonBuilder.map((data) => ({
+        name: data.name,
+        id: data.id,
+        image: data.sprites['front_default'],
+        backImage: data.sprites['back_default'],
+         type: data.types.map(type => type.type.name) // mapping through an array in the data and getting out multiple entries
             .join(', ') // joining the array into a string, this is optional
-            
-        }));
-        displayPokemon(pokemon);
-        storePokemon(pokemon)     
-    });
+    }))
+    //console.log(pokemon)
+    return pokemon
 };
 
+fetchPokemon()
+    
 const storePokemon = (pokemon) => pokemon.map(individualPokemon => pokedexArray.push(individualPokemon)); 
 
 const displayPokemon = (pokemon) => {
@@ -62,8 +55,7 @@ const displayPokemon = (pokemon) => {
     
     pokedex.innerHTML = pokemonHtmlString;
 }
-
-fetchPokemon();
+*/
 
 /* trying to apply event listeners to dynamically created elements
 pokedex.onclick = (e) => {
@@ -135,3 +127,31 @@ const fetchPokemon = () => {
             });
         }
 };*/
+
+/* Fetch API Version 4, using Promise.all to return all Pokemon at the same time rather than one after the other
+const fetchPokemon = () => {
+    const promises = []; // initializing an array for promises
+    
+    for(let i = 1; i<= 151; i++) { //for loop that counts from 1 to 150 and assigns to i   
+        const url = `https://pokeapi.co/api/v2/pokemon/${i}` // url is edited by for loop.
+
+        // adding promises created by the for loop to the promises array
+        promises.push(fetch(url).then(response => response.json()))  // also making the response into a json
+    }
+    
+    // Resolving all the promises from the array simultaniously
+    Promise.all(promises).then((results) => { // Taking each result and mapping them onto Pokemon objects
+        const pokemon = results.map((data) => ({
+            name: data.name,
+            id: data.id,
+            image: data.sprites['front_default'],
+            backImage: data.sprites['back_default'],
+            type: data.types.map(type => type.type.name) // mapping through an array in the data and getting out multiple entries
+            .join(', ') // joining the array into a string, this is optional
+            
+        }));
+        displayPokemon(pokemon);
+        storePokemon(pokemon)     
+    });
+};
+*/
