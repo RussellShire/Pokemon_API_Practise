@@ -1,49 +1,61 @@
 const pokedex = document.getElementById('pokedex');
-const pokeNames = [];
-const pokedexArray = [];
+// QUESTION FOR GRAHAM: I've got two options here, global or local variable, which is preferred?
+//const pokeNames = [];
+//const pokedexArray = [];
 
+// Getting names of pokemon fromt the API so we can build URLs for future API calls
 async function fetchPokeNames(pokeCounter = 151) {
     const pokeCount = pokeCounter;
     const response = await fetch(`https://pokeapi.co/api/v2/pokemon/?limit=${pokeCount}`);
     const data = await response.json()
 
     // Mapping pokemon names to a global array
-    data.results.map(async pokemon => pokeNames.push(await pokemon.name))   
+    //data.results.map(pokemon => pokeNames.push(pokemon.name))
+    return data.results.map(pokemon => pokemon.name) 
 }
 
-// Fetch API Version 5, converting to Async Await and building with names instead of numbers in URL as will be the case with most APIs
-async function fetchPokemon(){
-    await fetchPokeNames(11)
-    
-    const pokemonBuilder = await Promise.all(pokeNames.map(async pokeName => {
-            const url = `https://pokeapi.co/api/v2/pokemon/${pokeName}`
-            const result = await fetch(url);
-            const data = await result.json();
-            //console.log(data.name);
-            return data
-        }))
+// Fetch API Version 7, asyncing all of .then so it's ES8
+async function fetchPokemon(pokeCounter){
+    //const promises = []; // initializing an array for promises
+    const pokeNum = pokeCounter;
 
-    const pokemon = await pokemonBuilder.map((data) => ({
-        name: data.name,
-        id: data.id,
-        image: data.sprites['front_default'],
-        backImage: data.sprites['back_default'],
-         type: data.types.map(type => type.type.name) // mapping through an array in the data and getting out multiple entries
-            .join(', ') // joining the array into a string, this is optional
+    // Requesting all the names of the Pokemon from the API    
+    const pokeNames = await fetchPokeNames(pokeNum)
+    
+    const pokemon = await Promise.all(
+        //mapping through the variable that has been populated by fetchPokeNames() 
+        pokeNames.map(async pokemon => {
+            // url is edited by map
+            const url = `https://pokeapi.co/api/v2/pokemon/${pokemon}` 
+            
+            // fetching from API and converting to json
+            const response = await fetch(url);
+            const data = await response.json();
+            
+            //returning an object inline that contains the required data from the API
+            return {
+                name: data.name,
+                id: data.id,
+                image: data.sprites['front_default'],
+                backImage: data.sprites['back_default'],
+                type: data.types.map( type => type.type.name) // mapping through an array in the data and getting out multiple entries
+                .join(', ') // joining the array into a string, this is optional
+                    
+        }
     }))
-    //console.log(pokemon)
-    return pokemon
+    // passing the created Pokemon objects into function
+    displayPokemon(pokemon);
+    //Option to send created pokemon to a global Array
+    //storePokemon(pokemon)      
 };
 
-fetchPokemon()
-    
+//Function to add pokemon to an array to be used later
 const storePokemon = (pokemon) => pokemon.map(individualPokemon => pokedexArray.push(individualPokemon)); 
 
+//Dynamically building HTML to display pokemon, would eventually be better as createElement rather than innerHTML
 const displayPokemon = (pokemon) => {
-    //console.log(pokemon)
-    
     // Building HTML for each pokemon using .map
-    const pokemonHtmlString = pokemon.map(individualPokemon => `
+    const pokemonHtmlString = pokemon.map((individualPokemon) => `
     <li class="card-border">
         <div class="card" id="card">
             <img class="card-image" src="${individualPokemon.image}"/>
@@ -55,7 +67,10 @@ const displayPokemon = (pokemon) => {
     
     pokedex.innerHTML = pokemonHtmlString;
 }
-*/
+
+fetchPokemon(151)
+
+// TESTING BELOW HERE
 
 /* trying to apply event listeners to dynamically created elements
 pokedex.onclick = (e) => {
@@ -69,7 +84,8 @@ pokedex.onclick = (e) => {
    // }
 }*/
 
-// Different implementations of API below, increasing in sophistication between versions
+// Different implementations of API below, increasing in sophistication between versions, 
+// kept as a reference for future projects
 
 /* Fetch API Version 1, making an object value by value
 const fetchPokemon = () => {
@@ -155,3 +171,64 @@ const fetchPokemon = () => {
     });
 };
 */
+
+/* Fetch API Version 5, using names instead of numbers
+async function fetchPokemon(){
+    const promises = []; // initializing an array for promises
+    const pokeCounter = 150;
+    await fetchPokeNames(pokeCounter+1)
+    
+    //console.log(`https://pokeapi.co/api/v2/pokemon/${pokeNames[0]}`)
+    //console.log(pokeNames[0]=1)
+    for(let i = 0; i<= pokeCounter; i++) { //for loop that counts from 1 to 150 and assigns to i   
+            const url = `https://pokeapi.co/api/v2/pokemon/${pokeNames[i]}` // url is edited by for loop.
+            console.log(url)
+            // adding promises created by the for loop to the promises array
+            promises.push(fetch(url).then(response => response.json()))  // also making the response into a json
+        }
+        
+        // Resolving all the promises from the array simultaniously
+        Promise.all(promises).then((results) => { // Taking each result and mapping them onto Pokemon objects
+            const pokemon = results.map((data) => ({
+                name: data.name,
+                id: data.id,
+                image: data.sprites['front_default'],
+                backImage: data.sprites['back_default'],
+                type: data.types.map(type => type.type.name) // mapping through an array in the data and getting out multiple entries
+                .join(', ') // joining the array into a string, this is optional
+                
+            }));
+        displayPokemon(pokemon);
+        storePokemon(pokemon)     
+    });
+};*/
+
+/* Fetch API Version 6, using map instead of for loop
+async function fetchPokemon(){
+    const promises = []; // initializing an array for promises
+    const pokeCounter = 10;
+    await fetchPokeNames(pokeCounter+1)
+    
+    pokeNames.map(pokemon => {
+        const url = `https://pokeapi.co/api/v2/pokemon/${pokemon}` // url is edited by for loop.
+        console.log(url)
+        // adding promises created by the map to the promises array
+        promises.push(fetch(url).then(response => response.json()))  // also making the response into a json
+    
+    })
+      
+    // Resolving all the promises from the array simultaniously
+    Promise.all(promises).then((results) => { // Taking each result and mapping them onto Pokemon objects
+        const pokemon = results.map((data) => ({
+            name: data.name,
+            id: data.id,
+            image: data.sprites['front_default'],
+            backImage: data.sprites['back_default'],
+            type: data.types.map(type => type.type.name) // mapping through an array in the data and getting out multiple entries
+            .join(', ') // joining the array into a string, this is optional
+                
+            }));
+        displayPokemon(pokemon);
+        storePokemon(pokemon)     
+    });
+};*/
