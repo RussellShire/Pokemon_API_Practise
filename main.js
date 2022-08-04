@@ -1,17 +1,21 @@
 const pokedex = document.getElementById('pokedex');
+const pokeNames = [];
 const pokedexArray = [];
 
-async function fetchPokeNames() {
-    const pokeCount = 151;
+async function fetchPokeNames(pokeCount) {
+    const pokeCount = pokeCount;
 
     const response = await fetch(`https://pokeapi.co/api/v2/pokemon/?limit=${pokeCount}`);
-    const pokemon = await response.json()
+    const data = await response.json()
     
-    console.log(pokemon.next);
-    console.log(pokemon.results)
+    // Mapping pokemon names to a global array
+    data.results.map(pokemon => pokeNames.push(pokemon.name))
 }
 
-//fetchPokeNames()
+fetchPokeNames(151) // Calling 151 pokemon names from the API and saving to an array
+
+// Fetch API Version 5, converting to Async Await and building with names instead of numbers in URL as will be the case with most APIs
+
 
 // Fetch API Version 4, using Promise.all to return all Pokemon at the same time rather than one after the other
 const fetchPokemon = () => {
