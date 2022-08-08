@@ -9,30 +9,32 @@ async function fetchPokeNames(pokeCounter = 151) {
     const response = await fetch(`https://pokeapi.co/api/v2/pokemon/?limit=${pokeCount}`);
     const data = await response.json()
 
-    // Mapping pokemon names to a global array
+// Two options here:
+    // Mapping pokemon names to a global array currently commented out
     //data.results.map(pokemon => pokeNames.push(pokemon.name))
+    
+    // Returning an array that can be used within functions
     return data.results.map(pokemon => pokemon.name) 
 }
 
 // Fetch API Version 7, asyncing all of .then so it's ES8
 async function fetchPokemon(pokeCounter){
-    //const promises = []; // initializing an array for promises
-    const pokeNum = pokeCounter;
-
-    // Requesting all the names of the Pokemon from the API    
+    // Requesting all the names of the Pokemon from the API to build the urls for more specific calls
+    const pokeNum = pokeCounter;    
     const pokeNames = await fetchPokeNames(pokeNum)
     
+// QUESTION FOR GRAHAM: Did I use promise all correctly here?
     const pokemon = await Promise.all(
         //mapping through the variable that has been populated by fetchPokeNames() 
         pokeNames.map(async pokemon => {
             // url is edited by map
             const url = `https://pokeapi.co/api/v2/pokemon/${pokemon}` 
             
-            // fetching from API and converting to json
+            // fetching everything from API and converting to json
             const response = await fetch(url);
             const data = await response.json();
             
-            //returning an object inline that contains the required data from the API
+            //returning an object inline that contains just the required data from the API
             return {
                 name: data.name,
                 id: data.id,
@@ -41,16 +43,17 @@ async function fetchPokemon(pokeCounter){
                 type: data.types.map( type => type.type.name) // mapping through an array in the data and getting out multiple entries
                 .join(', ') // joining the array into a string, this is optional
                     
-        }
-    }))
+        };
+    }));
+
     // passing the created Pokemon objects into function
     displayPokemon(pokemon);
     //Option to send created pokemon to a global Array
     //storePokemon(pokemon)      
 };
 
-//Function to add pokemon to an array to be used later
-const storePokemon = (pokemon) => pokemon.map(individualPokemon => pokedexArray.push(individualPokemon)); 
+//Function to add pokemon to an array to be used later, currently not being used
+// const storePokemon = (pokemon) => pokemon.map(individualPokemon => pokedexArray.push(individualPokemon)); 
 
 //Dynamically building HTML to display pokemon, would eventually be better as createElement rather than innerHTML
 const displayPokemon = (pokemon) => {
@@ -68,7 +71,8 @@ const displayPokemon = (pokemon) => {
     pokedex.innerHTML = pokemonHtmlString;
 }
 
-fetchPokemon(151)
+//Currently loading quite slow with 150 API calls, might be good to have them load on scroll
+fetchPokemon(150)
 
 // TESTING BELOW HERE
 

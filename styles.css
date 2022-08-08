@@ -1,7 +1,7 @@
 body{
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
-    background-color: beige;
+    background-color:lightgoldenrodyellow;
 }
 
 h1 {
@@ -42,7 +42,7 @@ h2 {
     font-size: 80%;
     text-transform: capitalize;
     text-align: left;
-    padding-left: 1rem;
+    padding-left: 1.2rem;
 }
 
 .card-subtitle {
@@ -51,7 +51,7 @@ h2 {
     font-size: 80%;
     opacity: 0.9;
     text-align: left;
-    padding-left: 1.5rem;
+    padding-left: 1.3rem;
     padding-bottom: 1rem;
 }
 
@@ -63,11 +63,52 @@ h2 {
     background-color: lightgrey;
 }
 
+/*
+.card-image:hover {
+    animation: pulse 0.7s linear; 
+}
+
+@keyframes pulse {
+    20% {
+        height: 8rem; 
+        width: 11rem;
+        object-fit: contain;
+    }
+    40% {
+        height: 7rem;
+        width: 10rem;
+        object-fit: contain;
+    }
+    55% {
+        height: 8rem;
+        width: 11rem;
+        object-fit: contain;
+    }
+    65% {
+        height: 7rem;
+        width: 10rem;
+        object-fit: contain;
+    }
+}
+*/
+
 @keyframes bounce {
-    20% {transform: translateY(-0.5rem)}
-    40% {transform: translateY(0rem)}
-    55% {transform: translateY(-0.3rem)}
-    65% {transform: translateY(0rem)}
+    20% {
+        transform: translateY(-0.5rem);
+        box-shadow: 0.2rem 0.5rem 0.5rem gray;
+    }
+    40% {
+        transform: translateY(0rem);
+        box-shadow: 0.2rem 0.2rem 0.5rem gray;
+    }
+    55% {
+        transform: translateY(-0.3rem);
+        box-shadow: 0.2rem 0.35rem 0.5rem gray;
+    }
+    65% {
+        transform: translateY(0rem);
+        box-shadow: 0.2rem 0.2rem 0.5rem gray;
+    }
 }
 
 #poke-id {
