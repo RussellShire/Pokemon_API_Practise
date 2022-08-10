@@ -66,9 +66,24 @@ const displayPokemon = (pokemon) => {
         cardDiv.classList.add('card')
         cardDiv.setAttribute('id', 'card')
 
+        // simple array for flicking between images on with event listener
+        const images = [individualPokemon.image, individualPokemon.backImage]
+        
         const image = document.createElement('img')
         image.classList.add('card-image')
-        image.setAttribute('src', individualPokemon.image)
+        image.setAttribute('src', images[0])
+        
+        let imageClick = true
+        // Event listener to change back and forth between images
+        image.addEventListener('click', () => {
+            if (imageClick) {
+                image.setAttribute('src', images[1])
+                imageClick = false 
+            } else {
+                image.setAttribute('src', images[0])
+                imageClick = true
+            }  
+        })
         
         const titleDiv = document.createElement('div')
         titleDiv.classList.add('card-title')
@@ -87,16 +102,13 @@ const displayPokemon = (pokemon) => {
         typeP.textContent = `Type: ${individualPokemon.type}`
 
         // appending all the elements together
-        titleDiv.appendChild(idH2)
-        titleDiv.appendChild(nameH2)
+        titleDiv.append(idH2, nameH2)
+       
+        cardDiv.append(image, titleDiv, typeP)
 
-        cardDiv.appendChild(image)
-        cardDiv.appendChild(titleDiv)
-        cardDiv.appendChild(typeP)
+        listItem.append(cardDiv)
 
-        listItem.appendChild(cardDiv)
-
-        pokedex.appendChild(listItem)
+        pokedex.append(listItem)
     })
 }
 
