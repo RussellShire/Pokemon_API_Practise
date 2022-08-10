@@ -55,26 +55,74 @@ async function fetchPokemon(pokeCounter){
 //Function to add pokemon to an array to be used later, currently not being used
 // const storePokemon = (pokemon) => pokemon.map(individualPokemon => pokedexArray.push(individualPokemon)); 
 
-//Dynamically building HTML to display pokemon, would eventually be better as createElement rather than innerHTML
+// Maps over pokemon returned by api fetch and dynamically builds elements into the dom
 const displayPokemon = (pokemon) => {
-    // Building HTML for each pokemon using .map
-    const pokemonHtmlString = pokemon.map((individualPokemon) => `
-    <li class="card-border">
-        <div class="card" id="card">
-            <img class="card-image" src="${individualPokemon.image}"/>
-            <div class="card-title"><h2 class="poke-id" id="poke-id">${individualPokemon.id}.</h2> <h2 id="poke-name">${individualPokemon.name}</h2></div>
-            <p class="card-subtitle">Type: ${individualPokemon.type}</p>
-        </div>
-    </li>
-    `).join('') // converts .map array to a string so it can be fed into innerHTML
-    
-    pokedex.innerHTML = pokemonHtmlString;
+    pokemon.map((individualPokemon) => {
+        // creating all the elements that make a pokemon card, assigning classes and adding info from map as needed
+        const listItem = document.createElement('li')
+        listItem.classList.add( 'card-border')
+
+        const cardDiv = document.createElement('div')
+        cardDiv.classList.add('card')
+        cardDiv.setAttribute('id', 'card')
+
+        const image = document.createElement('img')
+        image.classList.add('card-image')
+        image.setAttribute('src', individualPokemon.image)
+        
+        const titleDiv = document.createElement('div')
+        titleDiv.classList.add('card-title')
+        
+        const idH2 = document.createElement('h2')
+        idH2.classList.add('poke-id')
+        idH2.setAttribute('id', 'poke-id')
+        idH2.textContent = `${individualPokemon.id}.`
+
+        const nameH2 = document.createElement('h2')
+        nameH2.setAttribute('id', 'poke-name')
+        nameH2.textContent = individualPokemon.name
+
+        const typeP = document.createElement('p')
+        typeP.classList.add('card-subtitle')
+        typeP.textContent = `Type: ${individualPokemon.type}`
+
+        // appending all the elements together
+        titleDiv.appendChild(idH2)
+        titleDiv.appendChild(nameH2)
+
+        cardDiv.appendChild(image)
+        cardDiv.appendChild(titleDiv)
+        cardDiv.appendChild(typeP)
+
+        listItem.appendChild(cardDiv)
+
+        pokedex.appendChild(listItem)
+    })
 }
 
 //Currently loading quite slow with 150 API calls, might be good to have them load on scroll
 fetchPokemon(150)
 
 // TESTING BELOW HERE
+
+//Dynamically building HTML to display pokemon
+// const displayPokemon = (pokemon) => {
+//     // Building HTML for each pokemon using .map
+//     const pokemonHtmlString = pokemon.map((individualPokemon) => `
+//     <li class="card-border">
+//         <div class="card" id="card">
+//             <img class="card-image" src="${individualPokemon.image}"/>
+//             <div class="card-title">
+//                 <h2 class="poke-id" id="poke-id">${individualPokemon.id}.</h2> 
+//                 <h2 id="poke-name">${individualPokemon.name}</h2>
+//             </div>
+//             <p class="card-subtitle">Type: ${individualPokemon.type}</p>
+//         </div>
+//     </li>
+//     `).join('') // converts .map array to a string so it can be fed into innerHTML
+    
+//     pokedex.innerHTML = pokemonHtmlString;
+// }
 
 /* trying to apply event listeners to dynamically created elements
 pokedex.onclick = (e) => {
