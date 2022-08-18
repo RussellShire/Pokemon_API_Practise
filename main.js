@@ -23,7 +23,6 @@ async function fetchPokemon(pokeCounter){
     const pokeNum = pokeCounter;    
     const pokeNames = await fetchPokeNames(pokeNum)
     
-// QUESTION FOR GRAHAM: Did I use promise all correctly here?
     const pokemon = await Promise.all(
         //mapping through the variable that has been populated by fetchPokeNames() 
         pokeNames.map(async pokemon => {
