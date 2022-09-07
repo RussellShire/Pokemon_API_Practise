@@ -1,17 +1,10 @@
 const pokedex = document.getElementById('pokedex');
-// QUESTION FOR GRAHAM: I've got two options here, global or local variable, which is preferred?
-//const pokeNames = [];
-//const pokedexArray = [];
 
 // Getting names of pokemon fromt the API so we can build URLs for future API calls
 async function fetchPokeNames(pokeCounter = 151) {
     const pokeCount = pokeCounter;
     const response = await fetch(`https://pokeapi.co/api/v2/pokemon/?limit=${pokeCount}`);
     const data = await response.json()
-
-// Two options here:
-    // Mapping pokemon names to a global array currently commented out
-    //data.results.map(pokemon => pokeNames.push(pokemon.name))
     
     // Returning an array that can be used within functions
     return data.results.map(pokemon => pokemon.name) 
@@ -47,12 +40,7 @@ async function fetchPokemon(pokeCounter){
 
     // passing the created Pokemon objects into function
     displayPokemon(pokemon);
-    //Option to send created pokemon to a global Array
-    //storePokemon(pokemon)      
 };
-
-//Function to add pokemon to an array to be used later, currently not being used
-// const storePokemon = (pokemon) => pokemon.map(individualPokemon => pokedexArray.push(individualPokemon)); 
 
 // Maps over pokemon returned by api fetch and dynamically builds elements into the dom
 const displayPokemon = (pokemon) => {
@@ -65,25 +53,43 @@ const displayPokemon = (pokemon) => {
         cardDiv.classList.add('card')
         cardDiv.setAttribute('id', 'card')
 
-        // simple array for flicking between images on with event listener
-        const images = [individualPokemon.image, individualPokemon.backImage]
+        // // simple array for flicking between images on with event listener
+        // const images = [individualPokemon.image, individualPokemon.backImage]
         
-        const image = document.createElement('img')
-        image.classList.add('card-image')
-        image.setAttribute('src', images[0])
+        // const image = document.createElement('img')
+        // image.classList.add('card-image')
+        // image.setAttribute('src', images[0])
         
-        let imageClick = true
-        // Event listener to change back and forth between images
-        image.addEventListener('click', () => {
-            if (imageClick) {
-                image.setAttribute('src', images[1])
-                imageClick = false 
-            } else {
-                image.setAttribute('src', images[0])
-                imageClick = true
-            }  
-        })
-        
+        // let imageClick = true
+        // // Event listener to change back and forth between images
+        // image.addEventListener('click', () => {
+        //     if (imageClick) {
+        //         image.setAttribute('src', images[1])
+        //         imageClick = false 
+        //     } else {
+        //         image.setAttribute('src', images[0])
+        //         imageClick = true
+        //     }  
+        // })
+
+        const image = document.createElement('div')
+        image.classList.add('image-background')
+
+        const imageFlip = document.createElement('div')
+        imageFlip.classList.add('card-image')
+
+
+        const imageFront = document.createElement('img')
+        imageFront.classList.add('image-front')
+        imageFront.setAttribute('src', individualPokemon.image)
+
+        const imageBack = document.createElement('img')
+        imageBack.classList.add('image-back')
+        imageBack.setAttribute('src', individualPokemon.backImage)
+
+        imageFlip.append(imageFront, imageBack)
+        image.append(imageFlip)
+
         const titleDiv = document.createElement('div')
         titleDiv.classList.add('card-title')
         

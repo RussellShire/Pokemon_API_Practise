@@ -1,4 +1,4 @@
-body{
+body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     background-color:lightgoldenrodyellow;
@@ -25,17 +25,12 @@ h2 {
     box-shadow: 0.2rem 0.2rem 0.5rem gray;
 }
 
-.card-border:hover {
-    animation: bounce 0.7s linear; 
-}
-
 .card {
     background-color: whitesmoke;
-    border-radius: 0rem;
     color: darkslategray;
     width: 12rem;
     height: 16rem;
-    box-shadow: 10rem, 10rem, black;
+    padding-top: 0.2rem;
 }
 
 .card-title {
@@ -55,42 +50,40 @@ h2 {
     padding-bottom: 1rem;
 }
 
-.card-image {
-    height: 7rem;
-    width: 10rem;
-    object-fit: contain;
-    margin: 1rem;
+.image-background {
     background-color: lightgrey;
+    height: 7rem;
+    width: 9rem;
+    margin: 1rem;
+    padding:0.5rem;
 }
 
-/*
-.card-image:hover {
-    animation: pulse 0.7s linear; 
+.card-image {
+    object-fit: contain;
+    position: relative;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
 }
 
-@keyframes pulse {
-    20% {
-        height: 8rem; 
-        width: 11rem;
-        object-fit: contain;
-    }
-    40% {
-        height: 7rem;
-        width: 10rem;
-        object-fit: contain;
-    }
-    55% {
-        height: 8rem;
-        width: 11rem;
-        object-fit: contain;
-    }
-    65% {
-        height: 7rem;
-        width: 10rem;
-        object-fit: contain;
-    }
+.card-border:hover {
+    animation: bounce 0.7s linear; 
 }
-*/
+
+.card-border:active .card-image {
+    transform: rotateY(180deg) translateX(-2.8rem);
+}
+
+.image-front,
+.image-back {
+    position: absolute;
+    transform: translateX(-3em);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+.image-back {
+    transform: rotateY(180deg);
+}
 
 @keyframes bounce {
     20% {
