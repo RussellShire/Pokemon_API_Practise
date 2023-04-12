@@ -2,6 +2,8 @@
 
 Learning different Vanilla Javascript API patterns by using the Pokemon API.
 
+I've since used the PokeAPI on a custom project with React here: https://github.com/RussellShire/react-pokedex
+
 <!-- # Hosted
 
 https://russellshire.github.io/Pokemon_API_Practise/ -->
